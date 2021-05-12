@@ -1,0 +1,7 @@
+*.png
+!(src/Game/dumbbell.png)
+*.mp4
+*.h5
+
+__pycache__/
+.ipynb_checkpoints/
