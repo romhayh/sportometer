@@ -49,7 +49,7 @@ def takeInput(movement : multiprocessing.Array):
     seq = {
         'boost': 0,
         'click': 0,
-        'upgrade': 0
+        'upgrad(e': 0
     }
     last_operation = ''
     timeWithoutMovement: np.uint16 = 0
@@ -135,7 +135,7 @@ def takeInput(movement : multiprocessing.Array):
                     seq[operation] += np.max(prediction)
                     if seq[operation] >= SEQ_SIZES[operation]:
                         movement[np.argmax(prediction)] = 1
-                        #print(f'CLASSES[np.argmax(movement)] = {CLASSES[np.argmax(movement)]}, seq = {seq}')
+                        print(f'CLASSES[np.argmax(movement)] = {CLASSES[np.argmax(movement)]}, seq = {seq}')
                         
                         # reset
                         for c in CLASSES:
@@ -161,13 +161,10 @@ def takeInput(movement : multiprocessing.Array):
     cap.release()
     cv2.destroyAllWindows()
 
-    # return the resource to the system
-    # existing_shm.close()
     
 
 
 if __name__ == '__main__':
-    # shr, movement = create_shared_block()
     movement = Array('i', 3)
     takeInput(movement)
     

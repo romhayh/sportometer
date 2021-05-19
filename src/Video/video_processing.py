@@ -159,9 +159,8 @@ def evenOut():
 
 
 
-def addToImageVector(tup):
+def addToImageVector(path):
     print('hi guy')
-    path, lock = tup
     
 
     # NAME = file name with extension
@@ -331,7 +330,7 @@ def addToImageVector(tup):
 
 def generateVector():
     cleanImagesDirectory()
-    insureAmountsJSON()
+    insureAmountsJSON() # setup amounts.json
     renameVideoFiles()
     
     ls = []
@@ -340,15 +339,6 @@ def generateVector():
         for file in os.listdir(normpath(VID_PATH + a)):
             ls.append(normpath(VID_PATH + a + file))
     print(len(ls))
-    
-    # make the video processing faster using multiprocessing
-    # add a mutex so that the different processes wouldnt use
-    # the common property - in this case the json
-    # in the same time (race conditions)
-    m = Manager()
-    lock = m.Lock()
-    
-    arr = mp.Array('i', 6)
     
     NUMBER_OF_CPUS = cpu_count()
     # use up to +++ of the cpu`s available 
@@ -360,9 +350,9 @@ def generateVector():
     with ProcessPoolExecutor(max_workers= MAX_WORKERS) as executor:  
         for path in ls:
             print(colored(path, 'green'))
-            executor.submit(addToImageVector, (path, lock))
+            executor.submit(addToImageVector, (path, ))
 
-    updateAmounts()
+    updateAmounts() # count the images and update amounts.json
     
     evenOut()
     
@@ -370,3 +360,5 @@ def generateVector():
 if __name__ == '__main__':
     
     generateVector()
+
+    

@@ -97,7 +97,7 @@ def draw(gameDisplay):
     
     drawText(gameDisplay,
     f'{np.round(score, 3)}',
-    (255,255, 255), (0, 0, 0),
+    (255, 255, 255), (0, 0, 0),
     WIDTH / 2, HEIGHT / 2, getFontSize())
     
     drawText(gameDisplay,
@@ -117,7 +117,7 @@ def draw(gameDisplay):
             WIDTH / 4, 7 * HEIGHT / 8, getFontSize())
     
     drawText(gameDisplay,
-        f'sp per click: {np.round(pointsPerClick)}',
+        f'sp per click: {np.round(pointsPerClick, 5)}',
         (255,255, 255), (0, 0, 0),
         WIDTH / 4, 3 * HEIGHT / 4, getFontSize())
     
@@ -127,9 +127,11 @@ def runGame(_movement : Array):
     global boostStart
     gameDisplay = pygame.display.set_mode((WIDTH, HEIGHT))
     init()
+    
     # start of movement
     # if set to True - there is an on going movement
     start = False
+    lastMovement = -1
     running = True
     while running:
         # window section
@@ -138,31 +140,57 @@ def runGame(_movement : Array):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                
+        # make the working movement array a numpy array
+        # to be compatable with numba
+        # and to be able to iterate over it in less time
         movement: np.ndarray = np.array(_movement, dtype = np.uint8)
         
-        draw(gameDisplay)
-        
-        pygame.display.flip()
         
         # movement
-        
         for i in range(len(movement)):
             if movement[i] != 0:
+                # if the interpreter got to here
+                # it means that there is a movement detected
+                
+                # when theres movement, the video
+                # input may send it once, 
+                # but this code will get it more than once
+                # in order to be able to detect a movement 
+                # correctly, the max time for one movement
+                # is set to some value in seconds, that is
+                # a time frame in which
+                # if there is sequence of the same movement 
+                # detected with a length that is
+                # bigger or equal to one, only one  
+                # of them will count.
                 if not start:
                     start = True
+                    # start the timer
                     t1 = time.perf_counter()
                     doAction(movement)
                     print(f'score = {score}')
-                elif start:
+                    lastMovement = i
+                    
+                    
+                elif start and lastMovement == i:
+                    # end the timer
                     t2 = time.perf_counter()
                     if t2-t1 > 0.2:
                         start = False
+                        lastMovement = -1
         
+        # if more than BOOST_TIME seconds started since 
+        # the last boost
         if time.perf_counter() - boostStart > BOOST_TIME:
+            # reset the clock
             if boostStart:
                 print(colored(f'{time.perf_counter() - boostStart} is bigger than {BOOST_TIME}', 'red'))
             boostCoefficient = 1
             boostStart = 0
+            
+        draw(gameDisplay)
+        pygame.display.flip()
         
         if keyboard.is_pressed('q'):
             print(f'exiting')
