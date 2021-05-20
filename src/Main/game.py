@@ -9,11 +9,13 @@ from numba import njit
 import keyboard
 from termcolor import colored
 
+from colorfuncs import getColor
+
 pygame.init()
 
 # screen
-WIDTH = 1080
-HEIGHT = 800
+WIDTH = 900
+HEIGHT = 640
 
 
 # game
@@ -68,7 +70,7 @@ def doAction(action: np.ndarray):
 
 def drawText(gameDisplay, text, textcolor, rectcolor, x, y, fsize):
     font = pygame.font.Font(
-        r'D:\vscode workspace\cv project\src\Game\Freshman-POdx.ttf', fsize)
+        r'C:\Users\romha\sportometer\src\Game\Freshman-POdx.ttf', fsize)
     text = font.render(text, True, textcolor, rectcolor)
 
     # the boundries of the text object
@@ -82,7 +84,7 @@ def drawText(gameDisplay, text, textcolor, rectcolor, x, y, fsize):
 def init():
 
     icon = pygame.image.load(
-        r'D:\vscode workspace\cv project\src\Game\game_icon.ico')
+        r'C:\Users\romha\sportometer\src\Game\game_icon.ico')
 
     pygame.display.set_caption('Sportometer')
     pygame.display.set_icon(icon)
@@ -102,7 +104,7 @@ def draw(gameDisplay):
 
     drawText(gameDisplay,
              f'{np.round(score, 3)}',
-             (255, 255, 255), (0, 0, 0),
+             getColor(score), (0, 0, 0),
              WIDTH / 2, HEIGHT / 2, getFontSize())
 
     drawText(gameDisplay,
@@ -132,6 +134,7 @@ def draw(gameDisplay):
 def runGame(_movement: Array):
     global boostCoefficient
     global boostStart
+    
     gameDisplay = pygame.display.set_mode((WIDTH, HEIGHT))
     init()
 
@@ -205,5 +208,6 @@ def runGame(_movement: Array):
 
 
 if __name__ == '__main__':
+    action = Array('i', 3)
+    runGame(action)
 
-    pass

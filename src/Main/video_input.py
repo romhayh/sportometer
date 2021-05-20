@@ -47,7 +47,7 @@ def takeInput(movement: multiprocessing.Array):
     from tensorflow import keras
 
     model = keras.models.load_model(
-        normpath('D:/vscode workspace/cv project/src/Video/Models/bigmodel.h5'))
+        normpath(r'C:\Users\romha\sportometer\src\Video\Models\bigmodel.h5'))
 
     seq = {
         'boost': 0,
@@ -71,7 +71,7 @@ def takeInput(movement: multiprocessing.Array):
 
         movement[:] = NP0[:]
 
-        cv2.imshow('frame', frame1)
+        cv2.imshow('frame', cv2.resize(frame1, (300, 300)))
 
         _, frame2 = cap.read()
 
@@ -98,7 +98,7 @@ def takeInput(movement: multiprocessing.Array):
         #        ~ to become this value ^^^~~~~~~~~~~~~~~~~~~~~
         #        ~~~~~~~~~~~~~~ in this way ~^^^^^^^^^^^^^^^^^~
 
-        cv2.imshow('delta frame', img)
+        cv2.imshow('delta frame', cv2.resize(img, (300, 300)))
 
         hist = cv2.calcHist([img], [0], None, [256], [0, 256])
         #      ~~~~~~~~~~~~~^^^^^ an array of images ~~~~~~~~
